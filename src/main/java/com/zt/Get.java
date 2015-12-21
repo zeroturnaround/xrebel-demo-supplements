@@ -40,7 +40,7 @@ public class Get extends javax.servlet.http.HttpServlet {
                 String name = String.valueOf(supplement.get("name"));
                 String value = String.valueOf(price.get("value"));
 
-                String item = "{\"" + name + "\": " + value + "}";
+                String item = "{\"name\": \"" + name + "\", \"price\": \"" + value + "\"}";
 
                 sj.add(item);
             }

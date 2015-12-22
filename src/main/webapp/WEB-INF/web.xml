@@ -4,6 +4,10 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+    <listener>
+        <listener-class>com.zt.Init</listener-class>
+    </listener>
+
     <servlet>
         <servlet-name>Get</servlet-name>
         <servlet-class>com.zt.Get</servlet-class>
@@ -21,6 +25,4 @@
         <servlet-name>Amorpher</servlet-name>
         <url-pattern>/a</url-pattern>
     </servlet-mapping>
-
-
 </web-app>

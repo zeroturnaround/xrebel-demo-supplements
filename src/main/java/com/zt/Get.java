@@ -1,57 +1,68 @@
 package com.zt;
 
-import com.mongodb.*;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Endpoint;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.StringJoiner;
 
 
 public class Get extends javax.servlet.http.HttpServlet {
 
-    PrintWriter writer;
+  PrintWriter writer;
 
-    @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  @Override
+  protected void service(HttpServletRequest req, HttpServletResponse resp) {
 
-        resp.setHeader("Content-Type", "application/json");
+    try {
+      resp.setHeader("Content-Type", "application/json");
 
-        writer = resp.getWriter();
+      writer = resp.getWriter();
 
-        String host = System.getProperty("mongo.host", "localhost");
+      String host = System.getProperty("mongo.host", "localhost");
+      int port = 27017;
 
-        MongoClient mongoClient = new MongoClient(host, 27017);
-        DB db = mongoClient.getDB("mydb");
-        DBCollection supplements = db.getCollection("supplements");
-        DBCollection supplementPrices = db.getCollection("supplement_prices");
+      System.out.println("Talking to Mongo at " + host + ":" + port);
 
-        DBCursor cursor = supplements.find();
-        try {
-            StringJoiner sj = new StringJoiner(",", "[", "]");
-            while (cursor.hasNext()) {
-                DBObject supplement = cursor.next();
-                Object priceId = supplement.get("price_id");
+      MongoClient mongoClient = new MongoClient(host, port);
+      DB db = mongoClient.getDB("mydb");
+      DBCollection supplements = db.getCollection("supplements");
+      DBCollection supplementPrices = db.getCollection("supplement_prices");
 
-                BasicDBObject query = new BasicDBObject("id", new BasicDBObject("$eq", priceId));
-                DBObject price = supplementPrices.findOne(query);
+      DBCursor cursor = supplements.find();
 
-                String name = String.valueOf(supplement.get("name"));
-                String value = String.valueOf(price.get("value"));
+      StringBuilder sj = new StringBuilder();
+      sj.append("[");
+      while (cursor.hasNext()) {
+        DBObject supplement = cursor.next();
+        Object priceId = supplement.get("price_id");
 
-                String item = "{\"name\": \"" + name + "\", \"price\": \"" + value + "\"}";
+        BasicDBObject query = new BasicDBObject("id", new BasicDBObject("$eq", priceId));
+        DBObject price = supplementPrices.findOne(query);
 
-                sj.add(item);
-            }
-            writer.write(sj.toString());
-        } finally {
-            cursor.close();
-            writer.flush();
-            writer.close();
+        String name = String.valueOf(supplement.get("name"));
+        String value = String.valueOf(price.get("value"));
+        String item = "{\"name\": \"" + name + "\", \"price\": \"" + value + "\"}";
+
+        sj.append(item);
+        if (cursor.hasNext()) {
+          sj.append(",");
         }
+      }
+      sj.append("]");
+      writer.write(sj.toString());
+      cursor.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      writer.flush();
+      writer.close();
     }
+  }
 
 }

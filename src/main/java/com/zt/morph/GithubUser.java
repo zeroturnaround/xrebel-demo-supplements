@@ -19,7 +19,7 @@ public class GithubUser {
     public Date memberSince;
     public Date lastActive;
     @Reference(lazy = true)
-    public List<Repository> repositories = new ArrayList<>();
+    public List<Repository> repositories = new ArrayList<Repository>();
     public int followers = 0;
     public int following = 0;
 

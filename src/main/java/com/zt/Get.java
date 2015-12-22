@@ -22,12 +22,15 @@ public class Get extends javax.servlet.http.HttpServlet {
 
         writer = resp.getWriter();
 
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        String host = System.getProperty("mongo.host", "localhost");
+
+        MongoClient mongoClient = new MongoClient(host, 27017);
         DB db = mongoClient.getDB("mydb");
         DBCollection supplements = db.getCollection("supplements");
         DBCollection supplementPrices = db.getCollection("supplement_prices");
 
-        try (DBCursor cursor = supplements.find()) {
+        DBCursor cursor = supplements.find();
+        try {
             StringJoiner sj = new StringJoiner(",", "[", "]");
             while (cursor.hasNext()) {
                 DBObject supplement = cursor.next();
@@ -44,9 +47,11 @@ public class Get extends javax.servlet.http.HttpServlet {
                 sj.add(item);
             }
             writer.write(sj.toString());
+        } finally {
+            cursor.close();
+            writer.flush();
+            writer.close();
         }
-        writer.flush();
-        writer.close();
     }
 
 }

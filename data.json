@@ -1,0 +1,22 @@
+[
+  {
+    "name": "apples",
+    "price": "123.23"
+  },
+  {
+    "name": "potatos",
+    "price": "987.12"
+  },
+  {
+    "name": "babanas",
+    "price": "234.54"
+  },
+  {
+    "name": "carrots",
+    "price": "345.65"
+  },
+  {
+    "name": "onions",
+    "price": "135.43"
+  }
+]

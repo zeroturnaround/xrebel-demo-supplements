@@ -7,15 +7,10 @@ import com.mongodb.MongoClient;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.UnknownHostException;
 
 public class Init implements ServletContextListener {
+
+  static boolean connected = false;
 
   @Override
   public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -25,6 +20,8 @@ public class Init implements ServletContextListener {
 
     try {
       MongoClient mongoClient = new MongoClient(host, port);
+      mongoClient.getMongoOptions().setAutoConnectRetry(false);
+
       DB db = mongoClient.getDB("mydb");
 
       DBCollection supplements = db.getCollection("supplements");
@@ -48,10 +45,10 @@ public class Init implements ServletContextListener {
 
       mongoClient.close();
 
-    } catch (UnknownHostException e) {
-      e.printStackTrace();
+      connected = true;
+    } catch (Exception e) {
+      System.err.println("Could not connect to Mongo instance: " + e.getMessage());
     }
-
 
   }
 

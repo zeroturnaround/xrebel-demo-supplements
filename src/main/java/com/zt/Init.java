@@ -3,6 +3,7 @@ package com.zt;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 import javax.servlet.ServletContextEvent;
@@ -20,7 +21,6 @@ public class Init implements ServletContextListener {
 
     try {
       MongoClient mongoClient = new MongoClient(host, port);
-      mongoClient.getMongoOptions().setAutoConnectRetry(false);
 
       DB db = mongoClient.getDB("mydb");
 

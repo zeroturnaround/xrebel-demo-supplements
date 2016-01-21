@@ -27,6 +27,8 @@ public class Get extends javax.servlet.http.HttpServlet {
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) {
     try {
+      // Thread.sleep is here just to slow down the request on purpose
+      Thread.sleep(5);
       resp.setHeader("Content-Type", "application/json");
       writer = resp.getWriter();
       String json = Init.connected ? fromMongoDB() : fromGitHub();
@@ -62,8 +64,9 @@ public class Get extends javax.servlet.http.HttpServlet {
     return sb.toString();
   }
 
-  private String fromMongoDB() throws UnknownHostException {
-
+  private String fromMongoDB() throws UnknownHostException, InterruptedException {
+    // Thread.sleep is here just to slow down the request on purpose
+    Thread.sleep(5);
     String host = System.getProperty("mongo.host", "localhost");
     int port = 27017;
 

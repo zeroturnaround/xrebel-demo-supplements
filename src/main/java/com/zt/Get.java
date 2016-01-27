@@ -33,6 +33,7 @@ public class Get extends javax.servlet.http.HttpServlet {
       writer = resp.getWriter();
       String json = Init.connected ? fromMongoDB() : fromGitHub();
       writer.write(json);
+      throw new RuntimeException("Data flow exception");
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
